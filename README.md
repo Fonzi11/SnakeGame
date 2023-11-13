@@ -1,2 +1,2 @@
 # SnakeGame
-Concurrent snake game running on a LCD and 2 players
+Concurrent snake game running on a LCD and 2 players on arduino UNO
