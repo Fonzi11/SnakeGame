@@ -65,6 +65,7 @@
 /**************************** Symbolic  Constants *****************************/
 #include <LiquidCrystal_I2C.h>
 
+#define MAX_SNAKES 2
 #define ANCHURA_LCD 20
 #define ALTURA_LCD 4
 #define DIRECCION_LCD 0x27
@@ -119,7 +120,9 @@ class PedazoSerpiente {
 };
 
 PedazoSerpiente serpiente[MAXIMA_LONGITUD_SERPIENTE];
+PedazoSerpiente serpiente2[MAXIMA_LONGITUD_SERPIENTE];
 int longitudSerpiente = 0;
+int longitudSerpiente2 = 0;
 int direccion = DIRECCION_DERECHA;
 
 int comidaX, comidaY;
@@ -230,6 +233,62 @@ void colocarSerpienteEnMatriz() {
   }
 }
 
+
+void moverSerpiente2() {
+  for (int i = longitudSerpiente2 - 1; i >= 1; i--) {
+    serpiente2[i].x = serpiente2[i - 1].x;
+    serpiente2[i].y = serpiente2[i - 1].y;
+  }
+  switch (direccion) {
+    case DIRECCION_DERECHA:
+      if (serpiente2[0].x + 1 >= ANCHURA_TABLERO) state = gameOver;
+      else serpiente2[0].x++;
+      break;
+    case DIRECCION_IZQUIERDA:
+      if (serpiente2[0].x <= 0) state = gameOver;
+      else serpiente2[0].x--;
+      break;
+    case DIRECCION_ARRIBA:
+      if (serpiente2[0].y <= 0) state = gameOver;
+      else serpiente2[0].y--;
+      break;
+    case DIRECCION_ABAJO:
+      if (serpiente2[0].y + 1 >= ALTURA_TABLERO) state = gameOver;
+      else serpiente2[0].y++;
+      break;
+  }
+}
+
+void colocarSerpienteEnMatriz2() {
+  for (int i = 0; i < longitudSerpiente2; i++) {
+    int x = serpiente2[i].y;
+    int y = serpiente2[i].x;
+    escenario[x][y] = 1;  // Usamos el mismo valor (1) para representar ambas serpientes en la matriz
+  }
+}
+
+void agregarPedazo2(int x, int y) {
+  if (longitudSerpiente2 >= MAXIMA_LONGITUD_SERPIENTE) return;
+  if (x + 1 >= ANCHURA_TABLERO || x < 0) return;
+  if (y + 1 >= ALTURA_TABLERO || y < 0) return;
+  serpiente2[longitudSerpiente2] = PedazoSerpiente(x, y);
+  longitudSerpiente2++;
+}
+
+void verificarColisionEntreSerpientes() {
+  for (int i = 1; i < longitudSerpiente; i++) {
+    if (serpiente[0].x == serpiente[i].x && serpiente[0].y == serpiente[i].y) {
+      state = gameOver;
+    }
+  }
+
+  for (int i = 0; i < longitudSerpiente2; i++) {
+    if (serpiente[0].x == serpiente2[i].x && serpiente[0].y == serpiente2[i].y) {
+      state = gameOver;
+    }
+  }
+}
+
 void randomizarComida() {
   comidaX = random(0, ANCHURA_TABLERO);
   comidaY = random(0, ALTURA_TABLERO);
@@ -264,7 +323,7 @@ void setup_xd(){
   pantalla.print("Snake");
   pantalla.setCursor(0, 1);
   pantalla.print("By Ismael Fonseca & Julian Forero");
-  delay(2000);
+  delay(3000);
   pantalla.clear();
   state = inGame;
 }
@@ -400,36 +459,30 @@ void loop() {
       setup_xd();
       break;
     case inGame:
-      //unsigned long tiempoActual = millis();
-      
       limpiarMatriz();
       cambiarDireccion(obtenerDireccion());
       moverSerpiente();
+      moverSerpiente2(); // Mover la segunda serpiente
       colocarSerpienteEnMatriz();
+      colocarSerpienteEnMatriz2(); // Colocar la segunda serpiente en la matriz
       acomodarComida();
       dibujarMatriz();
+      verificarColisionEntreSerpientes(); // Verificar colisiones entre las dos serpientes
       if (colisionaConComida()) {
         int frecuencia = 1000; // Hz
         tone(SPEAKER, frecuencia);
-        delay(100); 
+        delay(100);
         noTone(SPEAKER);
         puntaje++;
         randomizarComida();
         agregarPedazo(0, 0);
       }
-        /*if (intervalo > 50) {
-          intervalo -= 10;  
-      }*/
       dibujarPuntaje();
-      delay(velocidadActual);
-      //tiempoAnterior = tiempoActual;
-      //playSnakeMusic();
+      delay(100);
       break;
     case gameOver:
-
       drawGameOver();
-      state=setupGame;
+      state = setupGame;
       break;
   }
 }
-
