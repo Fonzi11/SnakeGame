@@ -1,4 +1,4 @@
-  /* Ruler 1         2         3         4         5         6         7        */
+ /* Ruler 1         2         3         4         5         6         7        */
   /*****************************  snake.c ***************************************/
   /****************************** Arduino ***************************************/
   /* +-----------------------------------+                                      */
@@ -162,25 +162,25 @@ int obtenerDireccion2() {
 
 }
 void cambiarDireccion2(int nuevaDireccion2) {
-.  if (
-    nuevaDireccion != DIRECCION_DERECHA
-    && nuevaDireccion != DIRECCION_IZQUIERDA
-    && nuevaDireccion != DIRECCION_ARRIBA
-    && nuevaDireccion != DIRECCION_ABAJO
+  if (
+    nuevaDireccion2 != DIRECCION_DERECHA
+    && nuevaDireccion2 != DIRECCION_IZQUIERDA
+    && nuevaDireccion2 != DIRECCION_ARRIBA
+    && nuevaDireccion2 != DIRECCION_ABAJO
   ) {
     return;
   }
   if (
-    (nuevaDireccion == DIRECCION_DERECHA || nuevaDireccion == DIRECCION_IZQUIERDA)
+    (nuevaDireccion2 == DIRECCION_DERECHA || nuevaDireccion2 == DIRECCION_IZQUIERDA)
     && (direccion == DIRECCION_DERECHA || direccion == DIRECCION_IZQUIERDA)
   ) return;
 
   if (
-    (nuevaDireccion == DIRECCION_ARRIBA || nuevaDireccion == DIRECCION_ABAJO)
+    (nuevaDireccion2 == DIRECCION_ARRIBA || nuevaDireccion2 == DIRECCION_ABAJO)
     && (direccion == DIRECCION_ARRIBA || direccion == DIRECCION_ABAJO)
   ) return;
 
-  direccion = nuevaDireccion;
+  direccion = nuevaDireccion2;
 }
 void cambiarDireccion(int nuevaDireccion) {
   if (
@@ -477,5 +477,6 @@ void loop() {
       break;
   }
 }
+
 
 
